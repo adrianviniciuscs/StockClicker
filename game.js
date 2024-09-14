@@ -7,14 +7,15 @@ const stocks = [
 ];
 
 const bots = [
-	{ name: "Basic Bot", price: 1000, owned: 0, tradeAmount: 100, intelligence: 0.6 },
-	{ name: "Advanced Bot", price: 5000, owned: 0, tradeAmount: 500, intelligence: 0.8 },
-	{ name: "Expert Bot", price: 20000, owned: 0, tradeAmount: 2000, intelligence: 0.95 }
+	{ name: "Basic Bot", price: 1000, owned: 0, tradeAmount: 100, intelligence: 0.6, totalProfit: 0 },
+	{ name: "Advanced Bot", price: 5000, owned: 0, tradeAmount: 500, intelligence: 0.8, totalProfit: 0 },
+	{ name: "Expert Bot", price: 20000, owned: 0, tradeAmount: 2000, intelligence: 0.95, totalProfit: 0 }
 ];
 
 let money = 10000;
 let day = 1;
 const historyLength = 30;
+let netWorthChart;
 let chart;
 
 function updateDisplay() {
@@ -29,6 +30,7 @@ function updateNetWorth() {
 	const stocksValue = stocks.reduce((total, stock) => total + stock.price * stock.owned, 0);
 	const netWorth = money + stocksValue;
 	document.getElementById('netWorth').textContent = netWorth.toFixed(2);
+	return netWorth; // Return net worth for chart update
 }
 
 function updateStockList() {
@@ -65,6 +67,68 @@ function updateBotList() {
         `;
 		botList.appendChild(botItem);
 	});
+}
+
+function updateBotPerformance() {
+	const tableBody = document.getElementById('botPerformanceTable').getElementsByTagName('tbody')[0];
+	tableBody.innerHTML = '';
+
+	bots.forEach(bot => {
+		const row = tableBody.insertRow();
+		const nameCell = row.insertCell(0);
+		const profitCell = row.insertCell(1);
+
+		nameCell.textContent = bot.name;
+		profitCell.textContent = bot.totalProfit.toFixed(2);
+	});
+}
+
+function createNetWorthChart() {
+	const ctx = document.getElementById('netWorthChart').getContext('2d');
+	netWorthChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: [],
+			datasets: [{
+				label: 'Net Worth',
+				data: [],
+				borderColor: 'rgba(128,0,128,1)',
+				backgroundColor: 'rgba(128,0,128,0.2)',
+				fill: true
+			},
+			{
+				label: 'Money',
+				data: [],
+				borderColor: 'rgba(0,128,0,1)',
+				backgroundColor: 'rgba(0,128,0,0.2)',
+				fill: true,
+			}]
+		},
+		options: {
+			responsive: true,
+			scales: {
+				x: {
+					title: {
+						display: true,
+						text: 'Day'
+					}
+				},
+				y: {
+					title: {
+						display: true,
+						text: 'Amount ($)'
+					}
+				}
+			}
+		}
+	});
+}
+
+function updateNetWorthChart(day, netWorth, money) {
+	netWorthChart.data.labels.push(day);
+	netWorthChart.data.datasets[0].data.push(netWorth);
+	netWorthChart.data.datasets[1].data.push(money);
+	netWorthChart.update();
 }
 
 function createChart() {
@@ -152,12 +216,14 @@ function botTrading() {
 						const sharesBought = Math.floor(bot.tradeAmount / stock.price);
 						money -= sharesBought * stock.price;
 						stock.owned += sharesBought;
+						bot.totalProfit -= sharesBought * stock.price;
 					}
 				} else {
 					// Price is higher than previous day, sell
 					const sharesToSell = Math.min(stock.owned, Math.floor(bot.tradeAmount / stock.price));
 					money += sharesToSell * stock.price;
 					stock.owned -= sharesToSell;
+					bot.totalProfit += sharesToSell * stock.price;
 				}
 			} else {
 				// Bot makes a random decision
@@ -167,12 +233,14 @@ function botTrading() {
 						const sharesBought = Math.floor(bot.tradeAmount / stock.price);
 						money -= sharesBought * stock.price;
 						stock.owned += sharesBought;
+						bot.totalProfit -= sharesBought * stock.price;
 					}
 				} else {
 					// Sell
 					const sharesToSell = Math.min(stock.owned, Math.floor(bot.tradeAmount / stock.price));
 					money += sharesToSell * stock.price;
 					stock.owned -= sharesToSell;
+					bot.totalProfit += sharesToSell * stock.price;
 				}
 			}
 		}
@@ -266,11 +334,15 @@ function simulateDay() {
 	marketCrashEvent();
 	day++;
 	updateDisplay();
+	updateBotPerformance();
+	const netWorth = updateNetWorth(); // Get the updated net worth
+	updateNetWorthChart(day, netWorth, money); // Update the chart with the correct parameters
 }
 
 function init() {
 	createChart();
 	updateDisplay();
+	createNetWorthChart();
 
 	setInterval(() => {
 		simulateDay();
