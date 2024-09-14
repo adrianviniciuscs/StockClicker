@@ -1,5 +1,5 @@
 # StockClicker
-
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 Welcome to **StockClicker**! A fun and interactive game where you can trade stocks, buy trading bots, and react to market news. Test your trading skills and see how well you can manage your investments.
 
 ## Features
