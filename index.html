@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Advanced Stock Market Simulator</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+	<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+	<div class="container mx-auto px-4 py-8">
+		<h1 class="text-4xl font-bold mb-8 text-center text-blue-600">Advanced Stock Market Simulator</h1>
+		<div id="playerStats"
+			class="bg-white rounded-lg shadow-md p-6 mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+			<p class="text-xl font-semibold">Money: $<span id="money" class="text-green-600">10000.00</span>
+			</p>
+			<p class="text-xl font-semibold">Net Worth: $<span id="netWorth"
+					class="text-purple-600">10000.00</span></p>
+			<p class="text-xl font-semibold">Day: <span id="day" class="text-blue-600">1</span></p>
+			<p class="text-xl font-semibold">Market Sentiment: <span id="marketSentiment"
+					class="text-green-600">0.00</span></p>
+		</div>
+	</div>
+	<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+		<h2 class="text-2xl font-semibold mb-4">Stock Market Overview</h2>
+		<div class="chart-container h-96">
+			<canvas id="stockChart"></canvas>
+		</div>
+	</div>
+	<div id="stockList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"></div>
+	<div id="botShop" class="bg-white rounded-lg shadow-md p-6 mb-8">
+		<h2 class="text-2xl font-semibold mb-4">Trading Bot Shop</h2>
+		<div id="botList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+	</div>
+	<div id="newsFeed" class="bg-white rounded-lg shadow-md p-6">
+		<h2 class="text-2xl font-semibold mb-4">Market News</h2>
+		<ul id="newsList" class="list-disc pl-5"></ul>
+	</div>
+	</div>
+
+	<script src="game.js"></script>
+</body>
+
+</html>
