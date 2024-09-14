@@ -11,31 +11,24 @@ Welcome to **StockClicker**! A fun and interactive game where you can trade stoc
 
 ## How to Play
 
-1. **Open the Game in Your Browser**:
-   - Open `index.html` in your web browser.
-
-2. **Buy and Sell Stocks**:
-   - Use the "Buy" and "Sell" buttons next to each stock to manage your investments.
-
-3. **Buy Trading Bots**:
-   - Purchase bots from the Trading Bot Shop to automate trading.
-
-4. **Check Market News**:
-   - Read the news feed for updates that affect stock prices.
-
-5. **Track Your Stats**:
-   - Monitor your money, net worth, and market sentiment on the stats panel.
-
-## Installation
-
 1. **Clone the Repository**:
    ```bash
    git clone https://github.com/adrianviniciuscs/StockClicker.git
    ```
-2. **Navigate to Repository**:
-   ```bash
-   cd StockClicker
-   ```
+2. **Open the Game in Your Browser**:
+   - Open `index.html` in your web browser.
+
+3. **Buy and Sell Stocks**:
+   - Use the "Buy" and "Sell" buttons next to each stock to manage your investments.
+
+4. **Buy Trading Bots**:
+   - Purchase bots from the Trading Bot Shop to automate trading.
+
+5. **Check Market News**:
+   - Read the news feed for updates that affect stock prices.
+
+6. **Track Your Stats**:
+   - Monitor your money, net worth, and market sentiment on the stats panel.
 
 ## Contributing
 We welcome contributions! If you have ideas for improvements or new features, you can:
