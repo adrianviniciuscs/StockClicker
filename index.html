@@ -7,52 +7,97 @@
 	<title>StockClicker</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
 	<script src="https://cdn.tailwindcss.com"></script>
+	<!-- Google Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+	<style>
+		body {
+			font-family: 'Poppins', sans-serif;
+		}
+
+		/* Card hover effects */
+		.card:hover {
+			transform: scale(1.02);
+			transition: transform 0.2s ease-in-out;
+		}
+
+		/* Button hover */
+		.button:hover {
+			background-color: #2563eb;
+			color: white;
+		}
+
+		/* Smooth transitions for general UI elements */
+		.smooth-transition {
+			transition: all 0.3s ease;
+		}
+	</style>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-50">
 	<div class="container mx-auto px-4 py-8">
-		<h1 class="text-4xl font-bold mb-8 text-center text-blue-600">Advanced Stock Market Simulator</h1>
+		<h1 class="text-5xl font-extrabold mb-8 text-center text-blue-600">Advanced Stock Market Simulator</h1>
+
+		<!-- Player Stats -->
 		<div id="playerStats"
-			class="bg-white rounded-lg shadow-md p-6 mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-			<p class="text-xl font-semibold">Money: $<span id="money" class="text-green-600">10000.00</span>
-			</p>
-			<p class="text-xl font-semibold">Net Worth: $<span id="netWorth"
-					class="text-purple-600">10000.00</span></p>
-			<p class="text-xl font-semibold">Day: <span id="day" class="text-blue-600">1</span></p>
-			<p class="text-xl font-semibold">Market Sentiment: <span id="marketSentiment"
-					class="text-green-600">0.00</span></p>
-		</div>
-	</div>
-	<div class="bg-white rounded-lg shadow-md p-6 mb-8">
-		<h2 class="text-2xl font-semibold mb-4">Stock Market Overview</h2>
-		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-			<div class="chart-container h-96">
-				<canvas id="stockChart"></canvas>
+			class="bg-white rounded-lg shadow-lg p-8 mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+			<div class="card p-4 bg-blue-50 rounded-lg shadow-md">
+				<p class="text-2xl font-semibold">Money</p>
+				<p class="text-3xl text-green-600 font-bold">$<span id="money">10000.00</span></p>
 			</div>
-			<div class="chart-container h-96">
-				<canvas id="netWorthChart"></canvas>
+			<div class="card p-4 bg-purple-50 rounded-lg shadow-md">
+				<p class="text-2xl font-semibold">Net Worth</p>
+				<p class="text-3xl text-purple-600 font-bold">$<span id="netWorth">10000.00</span></p>
+			</div>
+			<div class="card p-4 bg-yellow-50 rounded-lg shadow-md">
+				<p class="text-2xl font-semibold">Day</p>
+				<p class="text-3xl text-blue-600 font-bold"><span id="day">1</span></p>
+			</div>
+			<div class="card p-4 bg-green-50 rounded-lg shadow-md">
+				<p class="text-2xl font-semibold">Market Sentiment</p>
+				<p class="text-3xl text-green-600 font-bold"><span id="marketSentiment">0.00</span></p>
 			</div>
 		</div>
-	</div>
-	<table id="botPerformanceTable" class="bg-white rounded-lg shadow-md p-6 mb-8">
-		<thead>
-			<tr>
-				<th> Bot name </th>
-				<th> Total Profit </th>
-			</tr>
-		</thead>
-		<tbody>
-		</tbody>
-	</table>
-	<div id="stockList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"></div>
-	<div id="botShop" class="bg-white rounded-lg shadow-md p-6 mb-8">
-		<h2 class="text-2xl font-semibold mb-4">Trading Bot Shop</h2>
-		<div id="botList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-	</div>
-	<div id="newsFeed" class="bg-white rounded-lg shadow-md p-6">
-		<h2 class="text-2xl font-semibold mb-4">Market News</h2>
-		<ul id="newsList" class="list-disc pl-5"></ul>
-	</div>
+
+		<!-- Stock Market Overview -->
+		<div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+			<h2 class="text-3xl font-semibold mb-4">Stock Market Overview</h2>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+				<div class="chart-container h-96 p-4 bg-gray-100 rounded-lg shadow-md">
+					<canvas id="stockChart"></canvas>
+				</div>
+				<div class="chart-container h-96 p-4 bg-gray-100 rounded-lg shadow-md">
+					<canvas id="netWorthChart"></canvas>
+				</div>
+			</div>
+		</div>
+
+		<!-- Bot Performance Bar Chart -->
+		<div class="bg-white rounded-lg shadow-md p-4 chart-container">
+			<h2 class="text-lg font-semibold mb-2">Bot Performance Chart</h2>
+			<div class="chart-container h-96 p-4 bg-gray-100 rounded-lg shadow-md">
+				<canvas id="botPerformanceChart"></canvas>
+			</div>
+
+		</div>
+		<!-- Stock List -->
+		<div id="stockList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"></div>
+
+		<!-- Trading Bot Shop -->
+		<div id="botShop" class="bg-white rounded-lg shadow-lg p-8 mb-8">
+			<h2 class="text-3xl font-semibold mb-4">Trading Bot Shop</h2>
+			<div id="botList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+		</div>
+
+		<!-- Market News Feed -->
+		<div id="newsFeed" class="bg-white rounded-lg shadow-lg p-8">
+			<h2 class="text-3xl font-semibold mb-4">Market News</h2>
+			<ul id="newsList" class="list-disc pl-5 smooth-transition">
+				<!-- Dynamic news items will go here -->
+			</ul>
+		</div>
+
 	</div>
 
 	<script src="game.js"></script>

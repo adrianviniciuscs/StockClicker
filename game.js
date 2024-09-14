@@ -15,8 +15,10 @@ const bots = [
 let money = 10000;
 let day = 1;
 const historyLength = 30;
+const botChartHistoryLength = 30;
 let netWorthChart;
 let chart;
+let botPerformanceChart;
 
 function updateDisplay() {
 	document.getElementById('money').textContent = money.toFixed(2);
@@ -30,12 +32,13 @@ function updateNetWorth() {
 	const stocksValue = stocks.reduce((total, stock) => total + stock.price * stock.owned, 0);
 	const netWorth = money + stocksValue;
 	document.getElementById('netWorth').textContent = netWorth.toFixed(2);
-	return netWorth; // Return net worth for chart update
+	return netWorth;
 }
 
 function updateStockList() {
 	const stockList = document.getElementById('stockList');
 	stockList.innerHTML = '';
+	const fragment = document.createDocumentFragment();
 	stocks.forEach((stock, index) => {
 		const stockItem = document.createElement('div');
 		stockItem.className = 'bg-white rounded-lg shadow-md p-6';
@@ -48,13 +51,15 @@ function updateStockList() {
                 <button onclick="sellStock(${index})" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">Sell</button>
             </div>
         `;
-		stockList.appendChild(stockItem);
+		fragment.appendChild(stockItem);
 	});
+	stockList.appendChild(fragment);
 }
 
 function updateBotList() {
 	const botList = document.getElementById('botList');
 	botList.innerHTML = '';
+	const fragment = document.createDocumentFragment();
 	bots.forEach((bot, index) => {
 		const botItem = document.createElement('div');
 		botItem.className = 'bg-white rounded-lg shadow-md p-6';
@@ -65,22 +70,24 @@ function updateBotList() {
             <p class="mb-4">Owned: <span id="bot-owned-${index}" class="font-bold">${bot.owned}</span></p>
             <button onclick="buyBot(${index})" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Buy Bot</button>
         `;
-		botList.appendChild(botItem);
+		fragment.appendChild(botItem);
 	});
+	botList.appendChild(fragment);
 }
 
 function updateBotPerformance() {
 	const tableBody = document.getElementById('botPerformanceTable').getElementsByTagName('tbody')[0];
 	tableBody.innerHTML = '';
-
+	const fragment = document.createDocumentFragment();
 	bots.forEach(bot => {
-		const row = tableBody.insertRow();
-		const nameCell = row.insertCell(0);
-		const profitCell = row.insertCell(1);
-
-		nameCell.textContent = bot.name;
-		profitCell.textContent = bot.totalProfit.toFixed(2);
+		const row = document.createElement('tr');
+		row.innerHTML = `
+            <td>${bot.name}</td>
+            <td>${bot.totalProfit.toFixed(2)}</td>
+        `;
+		fragment.appendChild(row);
 	});
+	tableBody.appendChild(fragment);
 }
 
 function createNetWorthChart() {
@@ -89,20 +96,22 @@ function createNetWorthChart() {
 		type: 'line',
 		data: {
 			labels: [],
-			datasets: [{
-				label: 'Net Worth',
-				data: [],
-				borderColor: 'rgba(128,0,128,1)',
-				backgroundColor: 'rgba(128,0,128,0.2)',
-				fill: true
-			},
-			{
-				label: 'Money',
-				data: [],
-				borderColor: 'rgba(0,128,0,1)',
-				backgroundColor: 'rgba(0,128,0,0.2)',
-				fill: true,
-			}]
+			datasets: [
+				{
+					label: 'Net Worth',
+					data: [],
+					borderColor: 'rgba(128,0,128,1)',
+					backgroundColor: 'rgba(128,0,128,0.2)',
+					fill: true
+				},
+				{
+					label: 'Money',
+					data: [],
+					borderColor: 'rgba(0,128,0,1)',
+					backgroundColor: 'rgba(0,128,0,0.2)',
+					fill: true
+				}
+			]
 		},
 		options: {
 			responsive: true,
@@ -129,6 +138,63 @@ function updateNetWorthChart(day, netWorth, money) {
 	netWorthChart.data.datasets[0].data.push(netWorth);
 	netWorthChart.data.datasets[1].data.push(money);
 	netWorthChart.update();
+}
+
+function createBotPerformanceChart() {
+	const ctx = document.getElementById('botPerformanceChart').getContext('2d');
+	botPerformanceChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: [],
+			datasets: bots.map(bot => ({
+				label: bot.name,
+				data: [],
+				borderColor: getRandomColor(),
+				fill: false,
+				tension: 0.1
+			}))
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false,
+			scales: {
+				x: {
+					title: {
+						display: true,
+						text: 'Day'
+					}
+				},
+				y: {
+					title: {
+						display: true,
+						text: 'Total Profit ($)'
+					},
+					beginAtZero: true
+				}
+			}
+		}
+	});
+}
+
+function updateBotPerformanceChart(day) {
+	botPerformanceChart.data.labels.push(day);
+	botPerformanceChart.data.datasets.forEach((dataset, i) => {
+		dataset.data.push(bots[i].totalProfit);
+		if (dataset.data.length > botChartHistoryLength) {
+			dataset.data.shift(); // Remove the oldest data point
+		}
+	});
+	if (botPerformanceChart.data.labels.length > botChartHistoryLength) {
+		botPerformanceChart.data.labels.shift(); // Remove the oldest label
+	}
+	botPerformanceChart.update();
+}
+
+function getRandomColor() {
+	const r = Math.floor(Math.random() * 255);
+	const g = Math.floor(Math.random() * 255);
+	const b = Math.floor(Math.random() * 255);
+	return `rgb(${r}, ${g}, ${b})`;
 }
 
 function createChart() {
@@ -209,9 +275,7 @@ function botTrading() {
 			const decision = Math.random();
 
 			if (decision < bot.intelligence) {
-				// Bot makes a "good" decision
 				if (stock.price < stock.history[stock.history.length - 2]) {
-					// Price is lower than previous day, buy
 					if (money >= bot.tradeAmount) {
 						const sharesBought = Math.floor(bot.tradeAmount / stock.price);
 						money -= sharesBought * stock.price;
@@ -219,16 +283,13 @@ function botTrading() {
 						bot.totalProfit -= sharesBought * stock.price;
 					}
 				} else {
-					// Price is higher than previous day, sell
 					const sharesToSell = Math.min(stock.owned, Math.floor(bot.tradeAmount / stock.price));
 					money += sharesToSell * stock.price;
 					stock.owned -= sharesToSell;
 					bot.totalProfit += sharesToSell * stock.price;
 				}
 			} else {
-				// Bot makes a random decision
 				if (Math.random() < 0.5) {
-					// Buy
 					if (money >= bot.tradeAmount) {
 						const sharesBought = Math.floor(bot.tradeAmount / stock.price);
 						money -= sharesBought * stock.price;
@@ -236,7 +297,6 @@ function botTrading() {
 						bot.totalProfit -= sharesBought * stock.price;
 					}
 				} else {
-					// Sell
 					const sharesToSell = Math.min(stock.owned, Math.floor(bot.tradeAmount / stock.price));
 					money += sharesToSell * stock.price;
 					stock.owned -= sharesToSell;
@@ -282,7 +342,6 @@ function generateNews() {
 		newsList.removeChild(newsList.lastChild);
 	}
 
-	// Apply news effect on stock prices
 	const stockIndex = stocks.findIndex(stock => stock.name === company);
 	if (stockIndex !== -1) {
 		const priceChange = (Math.random() * 0.1 + 0.05) * (impact.includes("surge") || impact.includes("optimism") ? 1 : -1);
@@ -291,8 +350,7 @@ function generateNews() {
 	}
 }
 
-// Market sentiment
-let marketSentiment = 0; // Range from -1 (bearish) to 1 (bullish)
+let marketSentiment = 0;
 
 function updateMarketSentiment() {
 	const sentimentChange = (Math.random() - 0.5) * 0.1;
@@ -302,22 +360,21 @@ function updateMarketSentiment() {
 	sentimentElement.className = marketSentiment > 0 ? 'text-green-600' : 'text-red-600';
 }
 
-// Stock splits
 function checkForStockSplit() {
 	stocks.forEach((stock, index) => {
 		if (stock.price > 1000 && Math.random() < 0.1) {
 			stock.price /= 2;
 			stock.owned *= 2;
-			generateNews(); // This will create news about the stock split
+			generateNews();
 			updateDisplay();
 		}
 	});
 }
 
 function marketCrashEvent() {
-	if (Math.random() < 0.001) { // 0.1% chance each day
+	if (Math.random() < 0.001) {
 		stocks.forEach(stock => {
-			stock.price *= 0.7; // 30% drop
+			stock.price *= 0.7;
 		});
 		marketSentiment = -1;
 		generateNews();
@@ -334,19 +391,20 @@ function simulateDay() {
 	marketCrashEvent();
 	day++;
 	updateDisplay();
-	updateBotPerformance();
-	const netWorth = updateNetWorth(); // Get the updated net worth
-	updateNetWorthChart(day, netWorth, money); // Update the chart with the correct parameters
+	const netWorth = updateNetWorth();
+	updateNetWorthChart(day, netWorth, money);
+	updateBotPerformanceChart(day);
 }
 
 function init() {
 	createChart();
 	updateDisplay();
 	createNetWorthChart();
+	createBotPerformanceChart();
 
 	setInterval(() => {
 		simulateDay();
-	}, 5000); // Simulate a new day every 5 seconds
+	}, 5000);
 }
 
 document.addEventListener('DOMContentLoaded', init);
