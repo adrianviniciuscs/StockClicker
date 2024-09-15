@@ -150,13 +150,10 @@ function createBotPerformanceChart() {
 				label: bot.name,
 				data: [],
 				borderColor: getRandomColor(),
-				fill: false,
-				tension: 0.1
+				fill: true,
 			}))
 		},
 		options: {
-			responsive: true,
-			maintainAspectRatio: false,
 			scales: {
 				x: {
 					title: {
@@ -169,7 +166,6 @@ function createBotPerformanceChart() {
 						display: true,
 						text: 'Total Profit ($)'
 					},
-					beginAtZero: true
 				}
 			}
 		}

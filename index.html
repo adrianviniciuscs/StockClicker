@@ -32,6 +32,11 @@
 		.smooth-transition {
 			transition: all 0.3s ease;
 		}
+
+		.chart-container {
+			max-height: 400px;
+			overflow-y: y;
+		}
 	</style>
 </head>
 
@@ -43,26 +48,26 @@
 		<div id="playerStats"
 			class="bg-white rounded-lg shadow-lg p-8 mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
 			<div class="card p-4 bg-blue-50 rounded-lg shadow-md">
-				<p class="text-2xl font-semibold">Money</p>
+				<p class="text-2xl font-semibold">💵 Money</p>
 				<p class="text-3xl text-green-600 font-bold">$<span id="money">10000.00</span></p>
 			</div>
 			<div class="card p-4 bg-purple-50 rounded-lg shadow-md">
-				<p class="text-2xl font-semibold">Net Worth</p>
+				<p class="text-2xl font-semibold">💲 Net Worth</p>
 				<p class="text-3xl text-purple-600 font-bold">$<span id="netWorth">10000.00</span></p>
 			</div>
 			<div class="card p-4 bg-yellow-50 rounded-lg shadow-md">
-				<p class="text-2xl font-semibold">Day</p>
+				<p class="text-2xl font-semibold">🗓️ Day</p>
 				<p class="text-3xl text-blue-600 font-bold"><span id="day">1</span></p>
 			</div>
 			<div class="card p-4 bg-green-50 rounded-lg shadow-md">
-				<p class="text-2xl font-semibold">Market Sentiment</p>
+				<p class="text-2xl font-semibold">📊 Market Sentiment</p>
 				<p class="text-3xl text-green-600 font-bold"><span id="marketSentiment">0.00</span></p>
 			</div>
 		</div>
 
 		<!-- Stock Market Overview -->
 		<div class="bg-white rounded-lg shadow-lg p-8 mb-8">
-			<h2 class="text-3xl font-semibold mb-4">Stock Market Overview</h2>
+			<h2 class="text-3xl font-semibold mb-4">📈 Stock Market Overview</h2>
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 				<div class="chart-container h-96 p-4 bg-gray-100 rounded-lg shadow-md">
 					<canvas id="stockChart"></canvas>
@@ -70,33 +75,28 @@
 				<div class="chart-container h-96 p-4 bg-gray-100 rounded-lg shadow-md">
 					<canvas id="netWorthChart"></canvas>
 				</div>
+				<div class="chart-container h-96 p-4 bg-gray-100 rounded-lg shadow-md">
+					<canvas id="botPerformanceChart"></canvas>
+				</div>
 			</div>
 		</div>
+	</div>
+	<!-- Stock List -->
+	<div id="stockList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"></div>
 
-		<!-- Bot Performance Bar Chart -->
-		<div class="bg-white rounded-lg shadow-md p-4 chart-container">
-			<h2 class="text-lg font-semibold mb-2">Bot Performance Chart</h2>
-			<div class="chart-container h-96 p-4 bg-gray-100 rounded-lg shadow-md">
-				<canvas id="botPerformanceChart"></canvas>
-			</div>
+	<!-- Trading Bot Shop -->
+	<div id="botShop" class="bg-white rounded-lg shadow-lg p-8 mb-8">
+		<h2 class="text-3xl font-semibold mb-4">🎰 Trading Bot Shop</h2>
+		<div id="botList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+	</div>
 
-		</div>
-		<!-- Stock List -->
-		<div id="stockList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"></div>
-
-		<!-- Trading Bot Shop -->
-		<div id="botShop" class="bg-white rounded-lg shadow-lg p-8 mb-8">
-			<h2 class="text-3xl font-semibold mb-4">Trading Bot Shop</h2>
-			<div id="botList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-		</div>
-
-		<!-- Market News Feed -->
-		<div id="newsFeed" class="bg-white rounded-lg shadow-lg p-8">
-			<h2 class="text-3xl font-semibold mb-4">Market News</h2>
-			<ul id="newsList" class="list-disc pl-5 smooth-transition">
-				<!-- Dynamic news items will go here -->
-			</ul>
-		</div>
+	<!-- Market News Feed -->
+	<div id="newsFeed" class="bg-white rounded-lg shadow-lg p-8">
+		<h2 class="text-3xl font-semibold mb-4">📰 Market News</h2>
+		<ul id="newsList" class="list-disc pl-5 smooth-transition">
+			<!-- Dynamic news items will go here -->
+		</ul>
+	</div>
 
 	</div>
 
